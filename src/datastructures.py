@@ -5,19 +5,12 @@ Update this file to implement the following already declared methods:
 - get_member: Should return a member from the self._members list
 """
 
+
 class FamilyStructure:
     def __init__(self, last_name):
         self.last_name = last_name
         self._next_id = 1
-        self._members = [
-            {
-                "id": self._generate_id(),
-                "first_name": "John",
-                "last_name": last_name,
-                "age": 33,
-                "lucky_numbers": [7, 13, 22]
-            }
-        ]
+        self._members = []
 
     # This method generates a unique incremental ID
     def _generate_id(self):
@@ -26,25 +19,22 @@ class FamilyStructure:
         return generated_id
 
     def add_member(self, member):
-        if "id" not in member:
-            member["id"] = self._generate_id()
         member["last_name"] = self.last_name
-        member["lucky_numbers"] = list(member.get("lucky_numbers", []))
+        member["id"] = self._generate_id()
+        member["lucky_numbers"] = list(member.get("lucky_numbers", set()))
         self._members.append(member)
         return member
 
     def delete_member(self, id):
-        for index, member in enumerate(self._members):
-            if member["id"] == id:
-                self._members.pop(index)
-                return {"done": True}
-        return {"done": False, "message": "Member not found"}
-
-    def get_member(self, id):
         for member in self._members:
             if member["id"] == id:
+                self._members.remove(member)
                 return member
         return None
+
+
+    def get_member(self, id):
+        return next((m for  m in self._members if m["id"] == id), None)
 
     # This method is done, it returns a list with all the family members
     def get_all_members(self):
